@@ -19,10 +19,18 @@
     }
   },
   "devDependencies": {
+    "bun": "^1.0.14",
     "eslint": "^8.24.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "react-refresh": "0.10.0",
-    "typescript": "latest"
+    "typescript": "latest",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@types/web": "^0.0.99",
+    "bun-types": "canary"
+  },
+  "scripts": {
+    "dev": "bun dev.ts"
   }
 }

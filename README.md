@@ -1,24 +1,14 @@
-# React with Bun runtime
+# Visual Fish
 
-This is a React project bootstrapped with [bun](https://bun.sh/).
+Visual Fish is an enhanced online editor and interpreter for the ><> (Fish) programming language, written in TypeScript.
 
-## Getting Started
+Follows specs detailed at [esolangs.org](https://esolangs.org/wiki/Fish). Additional features include:
 
-### Cloning the repo
+ - Copy (`Ctrl + C`) and paste (`Ctrl + V`) functionality
+ - Step by step execution 
+ - Stack & register visualisation
+ - enhanced input functionality
 
-```sh
-bun create react ./react-bun-app
-```
-
-### Development
-
-First, run the development server.
-
-```
-bun dev
-```
-
-Open http://localhost:3000 with your browser to see the result.
-
-You can start editing the page by modifying src/App.jsx. The page auto-updates as you edit the file.
-
+Features to come:
+ - Undo (`Ctrl + Z`) functionality
+ - Saving to and loading from text file
