@@ -34,50 +34,50 @@ function EditorRow({
     tempHeight,
     selectionEnd,
   } = editorState;
-  const paddedLine = line
-    .padEnd(tempWidth)
-    .padEnd(Math.max(
-      tempWidth + 5,
-      (selectionEnd?.x ?? 0) + 3,
-    ), "\t");
+  const paddedLine = useMemo(
+    () => line.padEnd(tempWidth).padEnd(
+      Math.max(tempWidth + 5, (selectionEnd?.x ?? 0) + 3), "\t",
+    ),
+    [line, tempWidth, selectionEnd?.x],
+  );
 
-  const lineMemo = useMemo(() => (
-    [...paddedLine].map((instruction, x) => {
-      for (let { x: tx, y: ty, tempInstruction } of editorState.tempInstructions) {
-        if (tx === x && ty === y) {
-          instruction = tempInstruction;
-        }
-      }
-      const Instruction: (props: IInstructionProps & { key: string }) => JSX.Element
-          = instructionMap[instruction];
+  // const lineMemo = useMemo(() => (
+  //   [...paddedLine].map((instruction, x) => {
+  //     for (let { x: tx, y: ty, tempInstruction } of editorState.tempInstructions) {
+  //       if (tx === x && ty === y) {
+  //         instruction = tempInstruction;
+  //       }
+  //     }
+  //     const Instruction: (props: IInstructionProps & { key: string }) => JSX.Element
+  //         = instructionMap[instruction];
 
-      return (x >= tempWidth || y >= tempHeight || Instruction === undefined) ? (
-        <BaseInstruction
-          key={`${x}-${y}`+instruction}
-          instruction={x >= tempWidth || y >= tempHeight ? "\t" : instruction}
-          instructionFunction={flagError}
-          color={x >= tempWidth || y >= tempHeight ? "transparent": "#606068"}
-          fontSize={fontSize}
-          imgUrl=""
-          isRaw={isRaw}
-          x={x}
-          y={y}
-          editorState={editorState}
-          editorDispatch={editorDispatch}
-        />
-      ) : (
-        <Instruction
-          key={`${x}-${y}`+instruction}
-          x={x}
-          y={y}
-          isRaw={isRaw}
-          editorState={editorState}
-          editorDispatch={editorDispatch}
-        />
-      );
-    })
-  ), [fontSize, isRaw, editorState.fish, editorState.selectionEnd, editorState.selectionStart,
-    editorState.cursorPosition, editorState.tempInstructions, paddedLine, tempHeight, tempWidth]);
+  //     return (x >= tempWidth || y >= tempHeight || Instruction === undefined) ? (
+  //       <BaseInstruction
+  //         key={`${x}-${y}`+instruction}
+  //         instruction={x >= tempWidth || y >= tempHeight ? "\t" : instruction}
+  //         instructionFunction={flagError}
+  //         color={x >= tempWidth || y >= tempHeight ? "transparent": "#606068"}
+  //         fontSize={fontSize}
+  //         imgUrl=""
+  //         isRaw={isRaw}
+  //         x={x}
+  //         y={y}
+  //         editorState={editorState}
+  //         editorDispatch={editorDispatch}
+  //       />
+  //     ) : (
+  //       <Instruction
+  //         key={`${x}-${y}`+instruction}
+  //         x={x}
+  //         y={y}
+  //         isRaw={isRaw}
+  //         editorState={editorState}
+  //         editorDispatch={editorDispatch}
+  //       />
+  //     );
+  //   })
+  // ), [fontSize, isRaw, editorState.fish, editorState.selectionEnd, editorState.selectionStart,
+  //   editorState.cursorPosition, editorState.tempInstructions, paddedLine, tempHeight, tempWidth]);
   
   return (
     <div
@@ -87,7 +87,40 @@ function EditorRow({
         flexDirection: "row",
       }}
     >
-      {lineMemo}
+      {[...paddedLine].map((instruction, x) => {
+        for (let { x: tx, y: ty, tempInstruction } of editorState.tempInstructions) {
+          if (tx === x && ty === y) {
+            instruction = tempInstruction;
+          }
+        }
+        const Instruction: (props: IInstructionProps & { key: string }) => JSX.Element
+            = instructionMap[instruction];
+
+        return (x >= tempWidth || y >= tempHeight || Instruction === undefined) ? (
+          <BaseInstruction
+            key={`${x}-${y}`+instruction}
+            instruction={x >= tempWidth || y >= tempHeight ? "\t" : instruction}
+            instructionFunction={flagError}
+            color={x >= tempWidth || y >= tempHeight ? "transparent": "#606068"}
+            fontSize={fontSize}
+            imgUrl=""
+            isRaw={isRaw}
+            x={x}
+            y={y}
+            editorState={editorState}
+            editorDispatch={editorDispatch}
+          />
+        ) : (
+          <Instruction
+            key={`${x}-${y}`+instruction}
+            x={x}
+            y={y}
+            isRaw={isRaw}
+            editorState={editorState}
+            editorDispatch={editorDispatch}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -246,22 +279,22 @@ function Editor({
     return (<div>{markers}</div>);
   }, [tempHeight]);
 
-  const editorMemo = useMemo(() => (
-    [
-      ...effectiveFish,
-      ...new Array(Math.max(5, (selectionEnd?.y ?? 0) - tempHeight + 3))
-        .fill("\t".repeat(tempWidth)),
-    ].map((line, y) => (
-      <EditorRow
-        key={`r${y}`}
-        line={line}
-        y={y}
-        editorState={editorState}
-        editorDispatch={editorDispatch}
-        isRaw={isRaw}
-      />
-    ))
-  ), [effectiveFish, selectionEnd?.y, tempHeight, tempWidth, isRaw]);
+  // const editorMemo = useMemo(() => (
+  //   [
+  //     ...effectiveFish,
+  //     ...new Array(Math.max(5, (selectionEnd?.y ?? 0) - tempHeight + 3))
+  //       .fill("\t".repeat(tempWidth)),
+  //   ].map((line, y) => (
+  //     <EditorRow
+  //       key={`r${y}`}
+  //       line={line}
+  //       y={y}
+  //       editorState={editorState}
+  //       editorDispatch={editorDispatch}
+  //       isRaw={isRaw}
+  //     />
+  //   ))
+  // ), [effectiveFish, selectionEnd?.y, tempHeight, tempWidth, isRaw]);
 
   return (
     <div
@@ -294,7 +327,20 @@ function Editor({
             marginBottom: "1em",
           }}
         >
-          {editorMemo}
+          {[
+            ...effectiveFish,
+            ...new Array(Math.max(5, (selectionEnd?.y ?? 0) - tempHeight + 3))
+              .fill("\t".repeat(tempWidth)),
+          ].map((line, y) => (
+            <EditorRow
+              key={`r${y}`}
+              line={line}
+              y={y}
+              editorState={editorState}
+              editorDispatch={editorDispatch}
+              isRaw={isRaw}
+            />
+          ))}
         </div>
       </div>
     </div>

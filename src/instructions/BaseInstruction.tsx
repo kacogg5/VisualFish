@@ -51,7 +51,10 @@ function BaseInstruction({
     cursorPosition,
   } = editorState;
 
-  const hasCursor = cursorPosition.x === x && cursorPosition.y === y;
+  const hasCursor = useMemo(
+    () => cursorPosition.x === x && cursorPosition.y === y,
+    [cursorPosition],
+  );
   color = color ?? "#606068";
 
   const borders = useMemo(() => {
